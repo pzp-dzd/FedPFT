@@ -1,5 +1,5 @@
 # FedPFT
-![img.png](img.png)
+![img.png](images/img.png)
 
 This is the official implementation of the IJCAI 2024 paper [FedPFT: Federated Proxy Fine-Tuning of Foundation Models]().
 **FedPFT**, a novel method enhancing FMs adaptation in downstream tasks through FL by two key modules.
@@ -10,7 +10,7 @@ This is the official implementation of the IJCAI 2024 paper [FedPFT: Federated P
 * 
 
 ## Results
-![img_1.png](img_1.png)
+![img_1.png](images/img_1.png)
 
 
 ## Citation
