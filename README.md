@@ -18,7 +18,7 @@ If you find our paper useful, please cite the paper:
 ```
 @**********{
 **********,
-author={Zhaopeng Peng and Xiaoliang Fan and Yufan Chen and Zheng Wang and Shirui Pan and Chenglu Wen and Ruisheng Zhang andCheng Wang},
+author={Zhaopeng Peng and Xiaoliang Fan and Yufan Chen and Zheng Wang and Shirui Pan and Chenglu Wen and Ruisheng Zhang and Cheng Wang},
 title={FedPFT: Federated Proxy Fine-Tuning of Foundation Models},
 journal={IJCAI}
 year={2024}
