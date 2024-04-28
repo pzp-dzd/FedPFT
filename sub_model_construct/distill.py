@@ -74,7 +74,6 @@ def construct_sub_model(model, qk_rank, intermediate_rank, sub_model_path, layer
                 layer_output_weight = model.encoder.layer[i].output.dense.weight.data  # dim_i * intermediate_size
                 layer_output_bias = model.encoder.layer[i].output.dense.bias.data  # dim_i
                 neuron_saliency = torch.cat([intermediate_weight, layer_output_weight.transpose(0, 1)], dim=1).norm(dim=1)
-                # neuron_retained = sorted(random.sample(range(intermediate_weight.shape[0]), intermediate_rank))
                 neuron_retained = sorted(neuron_saliency.sort(descending=True)[1][:intermediate_rank])
                 new_intermediate_weight = intermediate_weight[neuron_retained]
                 new_intermediate_bias = intermediate_bias[neuron_retained]
@@ -112,7 +111,6 @@ def construct_sub_model(model, qk_rank, intermediate_rank, sub_model_path, layer
                 layer_output_bias = model.encoder.layer[i].output.dense.bias.data  # dim_i
                 neuron_saliency = torch.cat([intermediate_weight, layer_output_weight.transpose(0, 1)], dim=1).norm(
                     dim=1)
-                # neuron_retained = sorted(random.sample(range(intermediate_weight.shape[0]), intermediate_rank))
                 neuron_retained = sorted(neuron_saliency.sort(descending=True)[1][:intermediate_rank])
                 new_intermediate_weight = intermediate_weight[neuron_retained]
                 new_intermediate_bias = intermediate_bias[neuron_retained]
@@ -126,8 +124,6 @@ def construct_sub_model(model, qk_rank, intermediate_rank, sub_model_path, layer
                     ('bias', layer_output_bias)
                 ]), strict=False)
             else:
-                # layer.attention.self.query.load_state_dict(model.encoder.layer[i].attention.self.query.state_dict())
-                # layer.attention.self.key.load_state_dict(model.encoder.layer[i].attention.self.key.state_dict())
                 layer.intermediate.dense.load_state_dict(model.encoder.layer[i].intermediate.dense.state_dict())
                 layer.output.dense.load_state_dict(model.encoder.layer[i].output.dense.state_dict())
         sub_model.save_pretrained(sub_model_path)
@@ -184,7 +180,7 @@ def main(args):
         model_name = sub_model_path.split("/")[-1]
         batch_size = args.per_device_train_batch_size * args.gradient_accumulation_steps
         train_args = TrainingArguments(
-            "{}-distilled-bookcorpus&wikipedia-lr{}-mgn{}-epoch{}-da{}-bs{}-with-wl".format(model_name, args.learning_rate, args.max_grad_norm, args.distill_epoch, args.distill_alpha, batch_size),
+            "./sub_model/{}-distilled-bookcorpus&wikipedia-lr{}-mgn{}-epoch{}-da{}-bs{}-with-wl".format(model_name, args.learning_rate, args.max_grad_norm, args.distill_epoch, args.distill_alpha, batch_size),
             remove_unused_columns=args.remove_unused_columns,
             save_strategy=args.save_strategy,
             per_device_train_batch_size=args.per_device_train_batch_size,
@@ -218,7 +214,7 @@ def main(args):
             data_collator=DataCollatorWithPadding(tokenizer=tokenizer),
         )
         train_results = trainer.train(resume_from_checkpoint=args.resume_from_checkpoint)
-        trainer.save_model(output_dir="{}-distilled-bookcorpus&wikipedia-lr{}-mgn{}-epoch{}-da{}-bs{}-with-wl".format(model_name, args.learning_rate, args.max_grad_norm, args.distill_epoch, args.distill_alpha, batch_size))
+        trainer.save_model(output_dir="./sub_model/{}-distilled-bookcorpus&wikipedia-lr{}-mgn{}-epoch{}-da{}-bs{}-with-wl".format(model_name, args.learning_rate, args.max_grad_norm, args.distill_epoch, args.distill_alpha, batch_size))
 
 
 if __name__ == '__main__':
